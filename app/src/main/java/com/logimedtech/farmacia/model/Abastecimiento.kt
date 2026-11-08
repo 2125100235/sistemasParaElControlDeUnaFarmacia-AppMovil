@@ -3,10 +3,10 @@ package com.logimedtech.farmacia.model
 import java.time.LocalDate
 
 data class Abastecimiento(
-    val idAbastecimiento: Int,
+    val id_abastecimiento: Int,
     val fecha: LocalDate,
-    val cantidadIngresada: Int,
-    val codigoProducto: Int,
-    val idEmpleado: Int,
-    val idProveedor: Int
+    val cantidad_ingresada: Int,
+    val codigo_producto: Int,
+    val id_empleado: Int,
+    val id_proveedor: Int
     )

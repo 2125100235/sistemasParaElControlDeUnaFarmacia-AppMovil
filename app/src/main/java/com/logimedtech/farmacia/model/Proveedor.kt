@@ -1,7 +1,7 @@
 package com.logimedtech.farmacia.model
 
 data class Proveedor(
-    val idProveedor: Int,
+    val id_proveedor: Int,
     val nombre: String,
     val telefono: String,
     val correo: String,

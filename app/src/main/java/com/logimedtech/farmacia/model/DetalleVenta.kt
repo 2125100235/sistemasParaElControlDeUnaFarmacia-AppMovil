@@ -1,9 +1,9 @@
 package com.logimedtech.farmacia.model
 
 data class DetalleVenta(
-    val numeroNota: Int,
-    val codigoProducto: Int,
-    val cantidadSalida: Int,
-    val precioVenta: Float,
+    val numero_nota: Int,
+    val codigo_producto: Int,
+    val cantidad_salida: Int,
+    val precio_venta: Float,
     val subTotal: Float
 )

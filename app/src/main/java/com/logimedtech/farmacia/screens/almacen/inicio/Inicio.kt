@@ -7,7 +7,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.logimedtech.farmacia.screens.MenuLateral
 import com.logimedtech.farmacia.ui.theme.FarmaciaTheme
 
 @Composable
@@ -34,6 +33,11 @@ fun Inicio(){
         }
     }
 
+}
+
+@Composable
+fun MenuLateral() {
+    // Stub for MenuLateral
 }
 
 @Preview(showBackground = true)

@@ -1,13 +1,13 @@
 package com.logimedtech.farmacia.model
 
 data class Empleado(
-    val idEmpleado: Int,
-    val nombre: String,
-    val apellidoPaterno: String,
-    val apellidoMaterno: String,
-    val clave: String,
-    val correo: String,
-    val telefono: String,
-    val rol: String,
-    val estado: Int,
+    val id_empleado: Int? = null,
+    val nombre: String? = null,
+    val apellido_paterno: String? = null,
+    val apellido_materno: String? = null,
+    val clave: String? = null,
+    val correo: String? = null,
+    val telefono: String? = null,
+    val rol: String? = null,
+    val estado: Int? = null,
 )

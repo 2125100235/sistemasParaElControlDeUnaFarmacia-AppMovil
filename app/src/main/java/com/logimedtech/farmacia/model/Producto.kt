@@ -5,12 +5,12 @@ import java.time.LocalDate
 data class Producto(
     val codigo: Int,
     val nombre: String,
-    val tipoMedicamento: String,
+    val tipo_medicamento: String,
     val laboratorio: String,
-    val fechaIngreso: LocalDate,
-    val fechaCaducidad: LocalDate,
+    val fecha_Ingreso: LocalDate,
+    val fecha_caducidad: LocalDate,
     val existencia: Int,
-    val precioVenta: Float,
-    val idProveedor: Int,
+    val precio_venta: Float,
+    val id_proveedor: Int,
     val estado: Int
 )
