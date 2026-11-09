@@ -1,5 +1,9 @@
 package com.logimedtech.farmacia.screens.admin.perfil
 
+import com.logimedtech.farmacia.model.Empleado
+
 data class PerfilUiState(
-    val cargando: Boolean = false
+    val usuario: Empleado? = null,
+    val cargando: Boolean = false,
+    val error: String? = null
 )

@@ -4,7 +4,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClient {
-    private const val BASE_URL = "http://192.168.0.102/xampp/htdocs/sistemasParaElControlDeUnaFarmacia-Actualizado/php/"
+    private const val BASE_URL = "http://10.192.177.85/conexionAppMovil/"
     // by lazy garantiza que retrofit se cree solo por primera vez que la app lo necesita
     val api: ApiService by lazy {
         Retrofit.Builder()

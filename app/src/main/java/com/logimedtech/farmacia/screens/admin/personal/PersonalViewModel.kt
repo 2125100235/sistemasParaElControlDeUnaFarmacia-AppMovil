@@ -1,4 +1,6 @@
 package com.logimedtech.farmacia.screens.admin.personal
 
-class PersonalViewModel {
+import androidx.lifecycle.ViewModel
+
+class PersonalViewModel : ViewModel() {
 }

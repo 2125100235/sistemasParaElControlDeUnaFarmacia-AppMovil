@@ -12,7 +12,7 @@ interface ApiService {
 
     // Enviamos correo y clave por POST (Formulario) y esperamos un LoginResponse
     @FormUrlEncoded
-    @POST("http://192.168.0.102/conexionAppMovil/login.php")
+    @POST("login.php")
     suspend fun login(
         @Field("correo") correo: String,
         @Field("clave") clave: String

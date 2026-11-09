@@ -3,8 +3,10 @@ package com.logimedtech.farmacia.navigation
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.BarChart
+import androidx.compose.material.icons.filled.Group
+import androidx.compose.material.icons.filled.Inventory
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -12,9 +14,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
@@ -22,42 +25,51 @@ import androidx.navigation3.runtime.rememberDecoratedNavEntries
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
+import com.logimedtech.farmacia.model.UserSession
+import com.logimedtech.farmacia.screens.admin.perfil.PerfilRoute
+import com.logimedtech.farmacia.screens.admin.personal.PersonalRoute
 import com.logimedtech.farmacia.screens.admin.reportes.ReportesRoute
-import com.logimedtech.farmacia.screens.almacen.inicio.Inicio
+import com.logimedtech.farmacia.screens.almacen.inventario.InventarioRoute
 import com.logimedtech.farmacia.screens.login.LoginRoute
 
 @Composable
 fun AppNavigation() {
-    var selectedIndex by rememberSaveable { mutableIntStateOf(0) }
+    var userRole by rememberSaveable { mutableStateOf<String?>(null) }
 
     val loginBackStack = rememberNavBackStack(AppDestination.Login)
-    val adminBackStack = rememberNavBackStack(AppDestination.AdminDashboard)
+    val adminBackStack = rememberNavBackStack(AppDestination.AdminReportes)
     val almacenBackStack = rememberNavBackStack(AppDestination.InventarioAlmacen)
 
     val appEntryProvider = entryProvider<NavKey> {
+        // --- LOGIN ---
         entry<AppDestination.Login> {
             LoginRoute(
                 onLoginSuccess = { usuario ->
-                    when (usuario.rol) {
-                        "Administrador" -> {
-                            loginBackStack.clear()
-                            selectedIndex = 1
-                        }
-                        else -> {
-                            loginBackStack.clear()
-                            selectedIndex = 2
-                        }
-                    }
+                    UserSession.guardarSesion(usuario)
+                    userRole = usuario.rol
                 }
             )
         }
 
-        entry<AppDestination.AdminDashboard> {
+        // --- RUTAS ADMINISTRADOR ---
+        entry<AppDestination.AdminReportes> {
             ReportesRoute()
         }
 
+        entry<AppDestination.AdminPersonal> {
+            PersonalRoute()
+        }
+
+        // --- RUTAS ALMACENISTA ---
         entry<AppDestination.InventarioAlmacen> {
-            Inicio()
+            InventarioRoute()
+        }
+
+        // --- RUTA COMPARTIDA PERFIL ---
+        entry<AppDestination.Perfil> {
+            PerfilRoute(
+                onLogout = { userRole = null }
+            )
         }
     }
 
@@ -88,46 +100,88 @@ fun AppNavigation() {
         entryProvider = appEntryProvider
     )
 
-    val currentBackStack = when (selectedIndex) {
-        0 -> loginBackStack
-        1 -> adminBackStack
-        else -> almacenBackStack
+    BackHandler(enabled = userRole != null) {
+        userRole = null
     }
 
-    val currentEntries = when (selectedIndex) {
-        0 -> loginEntries
-        1 -> adminEntries
-        else -> almacenEntries
-    }
-
-    BackHandler(enabled = selectedIndex != 0 && currentBackStack.size == 1) {
-        selectedIndex = 0
+    val currentBackStack = when (userRole) {
+        "Administrador" -> adminBackStack
+        "Almacenista" -> almacenBackStack
+        else -> loginBackStack
     }
 
     Scaffold(
         bottomBar = {
-            if (selectedIndex != 0) {
-                NavigationBar {
-                    NavigationBarItem(
-                        selected = selectedIndex == 1,
-                        onClick = { selectedIndex = 1 },
-                        icon = { Icon(Icons.Default.Home, contentDescription = "Admin") },
-                        label = { Text("Admin") }
-                    )
-                    NavigationBarItem(
-                        selected = selectedIndex == 2,
-                        onClick = { selectedIndex = 2 },
-                        icon = { Icon(Icons.Default.List, contentDescription = "Inventario") },
-                        label = { Text("Inventario") }
-                    )
+            when (userRole) {
+                "Administrador" -> {
+                    val currentDestination = adminBackStack.lastOrNull()
+                    NavigationBar {
+                        NavigationBarItem(
+                            selected = currentDestination == AppDestination.AdminReportes,
+                            onClick = {
+                                adminBackStack.clear()
+                                adminBackStack.add(AppDestination.AdminReportes)
+                            },
+                            icon = { Icon(Icons.Default.BarChart, contentDescription = "Reportes") },
+                            label = { Text("Reportes") }
+                        )
+                        NavigationBarItem(
+                            selected = currentDestination == AppDestination.AdminPersonal,
+                            onClick = {
+                                adminBackStack.clear()
+                                adminBackStack.add(AppDestination.AdminPersonal)
+                            },
+                            icon = { Icon(Icons.Default.Group, contentDescription = "Personal") },
+                            label = { Text("Personal") }
+                        )
+                        NavigationBarItem(
+                            selected = currentDestination == AppDestination.Perfil,
+                            onClick = {
+                                adminBackStack.clear()
+                                adminBackStack.add(AppDestination.Perfil)
+                            },
+                            icon = { Icon(Icons.Default.Person, contentDescription = "Perfil") },
+                            label = { Text("Perfil") }
+                        )
+                    }
+                }
+
+                "Almacenista" -> {
+                    val currentDestination = almacenBackStack.lastOrNull()
+                    NavigationBar {
+                        NavigationBarItem(
+                            selected = currentDestination == AppDestination.InventarioAlmacen,
+                            onClick = {
+                                almacenBackStack.clear()
+                                almacenBackStack.add(AppDestination.InventarioAlmacen)
+                            },
+                            icon = { Icon(Icons.Default.Inventory, contentDescription = "Inventario") },
+                            label = { Text("Inventario") }
+                        )
+                        NavigationBarItem(
+                            selected = currentDestination == AppDestination.Perfil,
+                            onClick = {
+                                almacenBackStack.clear()
+                                almacenBackStack.add(AppDestination.Perfil)
+                            },
+                            icon = { Icon(Icons.Default.Person, contentDescription = "Perfil") },
+                            label = { Text("Perfil") }
+                        )
+                    }
                 }
             }
         }
     ) { innerPadding ->
+        val currentEntries = when (userRole) {
+            "Administrador" -> adminEntries
+            "Almacenista" -> almacenEntries
+            else -> loginEntries
+        }
+
         NavDisplay(
             entries = currentEntries,
-            modifier = androidx.compose.ui.Modifier.padding(innerPadding),
-            onBack = { currentBackStack.removeLastOrNull() }
+            onBack = { currentBackStack.removeLastOrNull() },
+            modifier = Modifier.padding(innerPadding)
         )
     }
 }

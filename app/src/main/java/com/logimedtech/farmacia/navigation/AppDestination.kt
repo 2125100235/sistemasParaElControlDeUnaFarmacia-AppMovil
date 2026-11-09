@@ -8,13 +8,13 @@ sealed interface AppDestination : NavKey {
     data object Login : AppDestination
 
     @Serializable
-    data object AdminDashboard : AppDestination
+    data object AdminReportes : AppDestination
+
+    @Serializable
+    data object AdminPersonal : AppDestination
 
     @Serializable
     data object InventarioAlmacen : AppDestination
-
-    @Serializable
-    data object Reportes : AppDestination
 
     @Serializable
     data object Perfil : AppDestination
