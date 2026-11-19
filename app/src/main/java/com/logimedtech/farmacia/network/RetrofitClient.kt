@@ -1,16 +1,26 @@
 package com.logimedtech.farmacia.network
 
+import android.R.attr.level
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClient {
-    private const val BASE_URL = "http://10.192.177.85/conexionAppMovil/"
-    // by lazy garantiza que retrofit se cree solo por primera vez que la app lo necesita
+    private const val BASE_URL = "http://10.0.2.2/conexionAppMovil/"
+
+    private val client = OkHttpClient.Builder()
+        .addInterceptor(HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        })
+        .build()
+
     val api: ApiService by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
+            .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(ApiService::class.java)
     }
-    }
+}

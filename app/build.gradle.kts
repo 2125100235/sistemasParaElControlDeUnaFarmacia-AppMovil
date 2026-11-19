@@ -60,6 +60,9 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation("androidx.compose.material:material-icons-extended")
 
+    // Interceptor de red para ver que sucede en tiempo real
+    implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
+
     testImplementation(libs.junit)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)

@@ -1,6 +1,5 @@
 package com.logimedtech.farmacia.navigation
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BarChart
@@ -68,7 +67,13 @@ fun AppNavigation() {
         // --- RUTA COMPARTIDA PERFIL ---
         entry<AppDestination.Perfil> {
             PerfilRoute(
-                onLogout = { userRole = null }
+                onLogout = {
+                    adminBackStack.clear()
+                    adminBackStack.add(AppDestination.AdminReportes)
+                    almacenBackStack.clear()
+                    almacenBackStack.add(AppDestination.InventarioAlmacen)
+                    userRole = null
+                }
             )
         }
     }
@@ -99,10 +104,6 @@ fun AppNavigation() {
         ),
         entryProvider = appEntryProvider
     )
-
-    BackHandler(enabled = userRole != null) {
-        userRole = null
-    }
 
     val currentBackStack = when (userRole) {
         "Administrador" -> adminBackStack
@@ -180,7 +181,15 @@ fun AppNavigation() {
 
         NavDisplay(
             entries = currentEntries,
-            onBack = { currentBackStack.removeLastOrNull() },
+            onBack = {
+                if (userRole == null) {
+                    if (loginBackStack.size > 1) loginBackStack.removeLastOrNull()
+                } else {
+                    if (currentBackStack.size > 1) {
+                        currentBackStack.removeLastOrNull()
+                    }
+                }
+            },
             modifier = Modifier.padding(innerPadding)
         )
     }
